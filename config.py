@@ -32,7 +32,7 @@ class Config():
             bashFileLoc = input()
             return "bash " + bashFileLoc
         else: 
-            return "wrong runiing method"
+            return "wrong running method"
         
 
     def get_test_run_metrics(self):
