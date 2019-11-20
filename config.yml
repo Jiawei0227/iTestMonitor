@@ -2,3 +2,17 @@ prometheus:
   server: localhost
   nodes: 
     - localhost
+
+  projectLocation: /Users/kaibocai/Documents/softwares/scripts/test.jar
+  supportProme: true
+  runningMethod: mvn
+  bashFileLoc: /Users/kaibocai/Documents/softwares/scripts/test.sh
+
+
+metrics:
+  
+
+  
+  
+
+
