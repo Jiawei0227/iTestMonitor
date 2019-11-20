@@ -10,7 +10,7 @@ prometheus:
 
 
 metrics:
-  
+  exporterUrl: "localhost:9100" 
 
   
   

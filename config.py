@@ -25,8 +25,7 @@ class Config():
         
 
     def get_test_run_metrics(self):
-        # TODO
-        pass
+        return self.config["metrics"]["exporterUrl"]
 
 
 
@@ -38,6 +37,7 @@ def main():
     #print(config)
     runningMethod = c.get_test_run_script()
     print(runningMethod)
+    print(config["metrics"]["exporterUrl"])
 
 
 
