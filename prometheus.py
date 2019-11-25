@@ -1,4 +1,5 @@
 import subprocess
+import requests
 from textwrap import dedent
 import time
 
@@ -6,7 +7,6 @@ PROMETHEUS_VERSION="2.14.0"
 NODE_EXPORTER_VERSION="0.18.1"
 
 def stop_prometheus():
-    time.sleep(5)
     p = subprocess.Popen("""
        kill -9 $(pgrep prometheus); 
     """, shell=True)
@@ -19,8 +19,9 @@ def start_prometheus():
         ./prometheus \
         --config.file=../prometheus.yml \
         --storage.tsdb.path=../data \
-        --web.enable-admin-api
-        """).format(PROMETHEUS_VERSION), shell=True )
+        --web.enable-admin-api &
+        """).format(PROMETHEUS_VERSION), shell=True)
+    time.sleep(3)
     print("Prometheus Server Started.")
 
 def install_prometheus_server():
@@ -51,6 +52,29 @@ def install_node_exporter():
         """).format(NODE_EXPORTER_VERSION=NODE_EXPORTER_VERSION), shell=True)
     p.wait()
     print("Install Node Exporter successfully.")
+
+def archive_data():
+  # snapshot prometheus data
+  re = requests.post(url="http://localhost:9090/api/v1/admin/tsdb/snapshot?skip_head=false")
+  archive_file = re.json()["data"]["name"]
+  p = subprocess.Popen(dedent("""
+    cd ~/SoftwareTest/data/snapshots;
+    mv {archive_file} data;
+    tar -czvf prometheus_data.tar.gz data;
+    mv prometheus_data.tar.gz ../..
+  """).format(archive_file=archive_file), shell=True)
+
+def restore_data():
+  p = subprocess.Popen(dedent("""
+    cd ~/SoftwareTest;
+    rm -rf prometheus_data;
+    tar -xzvf prometheus_data.tar.gz -C ~/SoftwareTest/snapshot;
+    prometheus-{0}.darwin-amd64/prometheus \
+    --config.file=prometheus.yml \
+    --storage.tsdb.path=snapshot/data \
+    --web.enable-admin-api &
+  """).format(PROMETHEUS_VERSION), shell=True) 
+
 
 def get_prometheus_yml():
   return dedent("""
