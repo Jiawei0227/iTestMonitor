@@ -37,6 +37,7 @@ def install_prometheus_server():
     prometheus_yml = get_prometheus_yml()
     p = subprocess.Popen(dedent("""
         # prometheus_server
+        mkdir -p ~/SoftwareTest
         cat > ~/SoftwareTest/prometheus.yml<<EOF{PROMETHEUS_YML}EOF
         mkdir -p ~/SoftwareTest/data;
         cd ~/SoftwareTest;
@@ -74,11 +75,12 @@ def archive_data():
 
 def restore_data():
   p = subprocess.Popen(dedent("""
+    kill $(pgrep node)
     cd ~/SoftwareTest;
     rm -rf prometheus_data;
     tar -xzvf prometheus_data.tar.gz -C ~/SoftwareTest/snapshot;
     prometheus-{0}.darwin-amd64/prometheus \
-    --config.file=prometheus.yml \
+    --config.file=prometheus2.yml \
     --storage.tsdb.path=snapshot/data \
     --web.enable-admin-api &
   """).format(PROMETHEUS_VERSION), shell=True) 

@@ -2,9 +2,9 @@ import prometheus
 import config
 
 def runtest():
-    config = config.Config()
-    script = config.get_test_run_script()
-    
+    con = config.Config()
+    script = con.get_test_run_script()
+    prometheus.run_test(script)
     pass
 
 def main():
@@ -16,5 +16,5 @@ def main():
     prometheus.stop_prometheus()
 
 if __name__ == "__main__":
-    main()
-    #prometheus.restore_data()
+    #main()
+    prometheus.restore_data()
