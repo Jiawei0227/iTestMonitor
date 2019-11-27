@@ -6,6 +6,14 @@ import time
 PROMETHEUS_VERSION="2.14.0"
 NODE_EXPORTER_VERSION="0.18.1"
 
+def run_test(script):
+  print("Start test running.")
+  p = subprocess.Popen(dedent(
+    """{0}"""
+  ).format(script), shell=True)
+  p.wait()
+
+
 def stop_prometheus():
     p = subprocess.Popen("""
        kill -9 $(pgrep prometheus); 
